@@ -10,6 +10,7 @@ out/
 dist/
 build/vscode/
 *.vsix
+*.tsbuildinfo
 
 # OS cruft
 Thumbs.db

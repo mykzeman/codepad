@@ -1,0 +1,16 @@
+{
+  "name": "@codepad/input-core",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared selection/activation model every Codepad panel is built against, so switch scanning and dwell-click can be layered on later without redesigning each panel.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "npm run build && node --test dist/index.test.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "^22.20.0"
+  }
+}

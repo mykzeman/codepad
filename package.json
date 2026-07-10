@@ -1,0 +1,14 @@
+{
+  "name": "codepad",
+  "private": true,
+  "version": "0.0.0",
+  "description": "An accessible IDE, forked from VSCodium, built for physically disabled developers to write code without a physical or on-screen keyboard.",
+  "workspaces": [
+    "extensions/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "validate-rules": "node scripts/validate-rules.js"
+  }
+}
