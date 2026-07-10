@@ -1,0 +1,112 @@
+{
+  "$schema": "./schema/language-rules.schema.json",
+  "languageId": "c",
+  "displayName": "C",
+  "fileExtensions": [".c", ".h"],
+  "indentation": "brace",
+  "blocks": [
+    {
+      "id": "if",
+      "label": "if",
+      "template": "if (${1:condition}) {\n    $0\n}"
+    },
+    {
+      "id": "if-else",
+      "label": "if / else",
+      "template": "if (${1:condition}) {\n    $0\n} else {\n    \n}"
+    },
+    {
+      "id": "for",
+      "label": "for",
+      "template": "for (int ${1:i} = 0; $1 < ${2:count}; $1++) {\n    $0\n}"
+    },
+    {
+      "id": "while",
+      "label": "while",
+      "template": "while (${1:condition}) {\n    $0\n}"
+    },
+    {
+      "id": "do-while",
+      "label": "do / while",
+      "template": "do {\n    $0\n} while (${1:condition});"
+    },
+    {
+      "id": "function",
+      "label": "function",
+      "template": "${1:void} ${2:name}(${3:void}) {\n    $0\n}"
+    },
+    {
+      "id": "struct",
+      "label": "struct",
+      "template": "struct ${1:Name} {\n    $0\n};"
+    },
+    {
+      "id": "switch",
+      "label": "switch",
+      "template": "switch (${1:expression}) {\n    case ${2:value}:\n        $0\n        break;\n    default:\n        break;\n}"
+    }
+  ],
+  "symbolKinds": [
+    {
+      "id": "variable",
+      "label": "Variable",
+      "modifiers": [
+        {
+          "id": "storage",
+          "label": "Storage",
+          "multiple": true,
+          "options": [
+            { "id": "static", "label": "static", "text": "static " },
+            { "id": "const", "label": "const", "text": "const " },
+            { "id": "extern", "label": "extern", "text": "extern " }
+          ]
+        }
+      ],
+      "types": [
+        "int", "unsigned int", "long", "unsigned long", "short",
+        "char", "float", "double", "void*", "char*", "bool"
+      ],
+      "template": "{storage}{type} {name};"
+    },
+    {
+      "id": "function",
+      "label": "Function",
+      "modifiers": [
+        {
+          "id": "storage",
+          "label": "Storage",
+          "multiple": false,
+          "options": [
+            { "id": "none", "label": "(none)", "text": "" },
+            { "id": "static", "label": "static", "text": "static " }
+          ]
+        }
+      ],
+      "types": ["void", "int", "char", "float", "double", "char*", "long", "bool"],
+      "template": "{storage}{type} {name}(void) {\n    $0\n}"
+    },
+    {
+      "id": "struct",
+      "label": "Struct",
+      "template": "struct {name} {\n    $0\n};"
+    }
+  ],
+  "imports": {
+    "statementTemplate": "#include <{path}>",
+    "insertPosition": "top-of-file",
+    "stdlib": [
+      { "path": "stdio.h", "label": "Standard I/O", "description": "printf, scanf, file I/O" },
+      { "path": "stdlib.h", "label": "Standard Library", "description": "malloc, free, exit, rand" },
+      { "path": "string.h", "label": "String handling", "description": "strlen, strcpy, memcpy" },
+      { "path": "math.h", "label": "Math functions", "description": "sqrt, pow, sin, cos" },
+      { "path": "ctype.h", "label": "Character classification", "description": "isalpha, isdigit, toupper" },
+      { "path": "time.h", "label": "Date and time", "description": "time, clock, struct tm" },
+      { "path": "stdbool.h", "label": "Boolean type", "description": "bool, true, false" },
+      { "path": "stdint.h", "label": "Fixed-width integers", "description": "int32_t, uint8_t, etc." },
+      { "path": "limits.h", "label": "Integer limits", "description": "INT_MAX, CHAR_BIT, etc." },
+      { "path": "float.h", "label": "Floating-point limits", "description": "DBL_MAX, FLT_EPSILON, etc." },
+      { "path": "assert.h", "label": "Diagnostics", "description": "assert macro" },
+      { "path": "errno.h", "label": "Error codes", "description": "errno, EDOM, ERANGE" }
+    ]
+  }
+}

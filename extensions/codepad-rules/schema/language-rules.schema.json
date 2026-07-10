@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codepad.dev/schemas/language-rules.schema.json",
+  "title": "Codepad Language Rule Set",
+  "description": "Defines, for one language, everything the on-screen keyboard's Blocks panel, the symbol maker, and the module reference editor need without hardcoding per-language behavior in extension code.",
+  "type": "object",
+  "required": ["languageId", "displayName", "fileExtensions", "indentation", "blocks", "symbolKinds", "imports"],
+  "additionalProperties": false,
+  "properties": {
+    "languageId": {
+      "type": "string",
+      "description": "VS Code language identifier, e.g. \"c\", \"java\", \"kotlin\"."
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "fileExtensions": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^\\." },
+      "minItems": 1
+    },
+    "indentation": {
+      "enum": ["brace", "indentation"],
+      "description": "Whether blocks are delimited by braces or by indentation (Python-style). All MVP languages (C, Java, Kotlin) are \"brace\"."
+    },
+    "blocks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/blockSnippet" }
+    },
+    "symbolKinds": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/symbolKind" }
+    },
+    "imports": { "$ref": "#/$defs/importRules" }
+  },
+  "$defs": {
+    "blockSnippet": {
+      "type": "object",
+      "required": ["id", "label", "template"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "label": {
+          "type": "string",
+          "description": "Button label shown on the on-screen keyboard's Blocks panel."
+        },
+        "template": {
+          "type": "string",
+          "description": "Snippet body using standard VS Code snippet syntax: ${1:placeholder} tab-stops and a final $0 for the resting caret position after insertion."
+        }
+      }
+    },
+    "symbolKind": {
+      "type": "object",
+      "required": ["id", "label", "template"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "e.g. \"variable\", \"function\", \"struct\", \"class\"."
+        },
+        "label": { "type": "string" },
+        "modifiers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/modifierGroup" },
+          "description": "Pick-one-or-more modifier groups shown in the symbol maker wizard before naming, e.g. storage class or visibility."
+        },
+        "types": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Fixed list of types offered for this kind (e.g. C primitive types for \"variable\"), so the wizard stays click-only instead of requiring free type entry."
+        },
+        "template": {
+          "type": "string",
+          "description": "Declaration template. Supports {name} and {type} placeholders, plus one {<modifierGroupId>} placeholder per modifier group, substituted from the wizard's selections."
+        }
+      }
+    },
+    "modifierGroup": {
+      "type": "object",
+      "required": ["id", "label", "options"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "multiple": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether more than one option in this group can be selected at once (e.g. \"static\" + \"const\")."
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "text"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string" },
+              "text": {
+                "type": "string",
+                "description": "Literal text substituted into the template's placeholder when this option is selected, e.g. \"static \" (including trailing space, if any)."
+              }
+            }
+          }
+        }
+      }
+    },
+    "importRules": {
+      "type": "object",
+      "required": ["statementTemplate", "insertPosition", "stdlib"],
+      "additionalProperties": false,
+      "properties": {
+        "statementTemplate": {
+          "type": "string",
+          "description": "e.g. \"#include <{path}>\" or \"import {path};\". Must contain a {path} placeholder."
+        },
+        "insertPosition": {
+          "enum": ["top-of-file", "after-existing-imports"]
+        },
+        "stdlib": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "label"],
+            "additionalProperties": false,
+            "properties": {
+              "path": { "type": "string" },
+              "label": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
