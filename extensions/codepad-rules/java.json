@@ -1,0 +1,177 @@
+{
+  "$schema": "./schema/language-rules.schema.json",
+  "languageId": "java",
+  "displayName": "Java",
+  "fileExtensions": [".java"],
+  "indentation": "brace",
+  "blocks": [
+    {
+      "id": "if",
+      "label": "if",
+      "template": "if (${1:condition}) {\n    $0\n}"
+    },
+    {
+      "id": "if-else",
+      "label": "if / else",
+      "template": "if (${1:condition}) {\n    $0\n} else {\n    \n}"
+    },
+    {
+      "id": "for",
+      "label": "for",
+      "template": "for (int ${1:i} = 0; $1 < ${2:count}; $1++) {\n    $0\n}"
+    },
+    {
+      "id": "for-each",
+      "label": "for-each",
+      "template": "for (${1:Type} ${2:item} : ${3:collection}) {\n    $0\n}"
+    },
+    {
+      "id": "while",
+      "label": "while",
+      "template": "while (${1:condition}) {\n    $0\n}"
+    },
+    {
+      "id": "do-while",
+      "label": "do / while",
+      "template": "do {\n    $0\n} while (${1:condition});"
+    },
+    {
+      "id": "method",
+      "label": "method",
+      "template": "${1:public} ${2:void} ${3:methodName}(${4:}) {\n    $0\n}"
+    },
+    {
+      "id": "class",
+      "label": "class",
+      "template": "${1:public} class ${2:ClassName} {\n    $0\n}"
+    },
+    {
+      "id": "try-catch",
+      "label": "try / catch",
+      "template": "try {\n    $0\n} catch (${1:Exception} ${2:e}) {\n    \n}"
+    },
+    {
+      "id": "switch",
+      "label": "switch",
+      "template": "switch (${1:expression}) {\n    case ${2:value}:\n        $0\n        break;\n    default:\n        break;\n}"
+    }
+  ],
+  "symbolKinds": [
+    {
+      "id": "variable",
+      "label": "Variable",
+      "modifiers": [
+        {
+          "id": "qualifiers",
+          "label": "Qualifiers",
+          "multiple": true,
+          "options": [
+            { "id": "final", "label": "final", "text": "final " }
+          ]
+        }
+      ],
+      "types": ["int", "long", "short", "byte", "double", "float", "char", "boolean", "String", "Object"],
+      "template": "{qualifiers}{type} {name};"
+    },
+    {
+      "id": "field",
+      "label": "Field",
+      "modifiers": [
+        {
+          "id": "visibility",
+          "label": "Visibility",
+          "multiple": false,
+          "options": [
+            { "id": "public", "label": "public", "text": "public " },
+            { "id": "private", "label": "private", "text": "private " },
+            { "id": "protected", "label": "protected", "text": "protected " },
+            { "id": "package", "label": "(package-private)", "text": "" }
+          ]
+        },
+        {
+          "id": "qualifiers",
+          "label": "Qualifiers",
+          "multiple": true,
+          "options": [
+            { "id": "static", "label": "static", "text": "static " },
+            { "id": "final", "label": "final", "text": "final " }
+          ]
+        }
+      ],
+      "types": ["int", "long", "short", "byte", "double", "float", "char", "boolean", "String", "Object"],
+      "template": "{visibility}{qualifiers}{type} {name};"
+    },
+    {
+      "id": "method",
+      "label": "Method",
+      "modifiers": [
+        {
+          "id": "visibility",
+          "label": "Visibility",
+          "multiple": false,
+          "options": [
+            { "id": "public", "label": "public", "text": "public " },
+            { "id": "private", "label": "private", "text": "private " },
+            { "id": "protected", "label": "protected", "text": "protected " },
+            { "id": "package", "label": "(package-private)", "text": "" }
+          ]
+        },
+        {
+          "id": "qualifiers",
+          "label": "Qualifiers",
+          "multiple": true,
+          "options": [
+            { "id": "static", "label": "static", "text": "static " },
+            { "id": "final", "label": "final", "text": "final " },
+            { "id": "abstract", "label": "abstract", "text": "abstract " }
+          ]
+        }
+      ],
+      "types": ["void", "int", "long", "short", "byte", "double", "float", "char", "boolean", "String", "Object"],
+      "template": "{visibility}{qualifiers}{type} {name}() {\n    $0\n}"
+    },
+    {
+      "id": "class",
+      "label": "Class",
+      "modifiers": [
+        {
+          "id": "visibility",
+          "label": "Visibility",
+          "multiple": false,
+          "options": [
+            { "id": "public", "label": "public", "text": "public " },
+            { "id": "package", "label": "(package-private)", "text": "" }
+          ]
+        },
+        {
+          "id": "qualifiers",
+          "label": "Qualifiers",
+          "multiple": true,
+          "options": [
+            { "id": "final", "label": "final", "text": "final " },
+            { "id": "abstract", "label": "abstract", "text": "abstract " }
+          ]
+        }
+      ],
+      "template": "{visibility}{qualifiers}class {name} {\n    $0\n}"
+    }
+  ],
+  "imports": {
+    "statementTemplate": "import {path};",
+    "insertPosition": "after-existing-imports",
+    "stdlib": [
+      { "path": "java.util.List", "label": "List", "description": "Ordered collection interface" },
+      { "path": "java.util.ArrayList", "label": "ArrayList", "description": "Resizable array List implementation" },
+      { "path": "java.util.Map", "label": "Map", "description": "Key-value collection interface" },
+      { "path": "java.util.HashMap", "label": "HashMap", "description": "Hash table Map implementation" },
+      { "path": "java.util.Scanner", "label": "Scanner", "description": "Reads input from a stream" },
+      { "path": "java.util.Arrays", "label": "Arrays", "description": "Array utility methods" },
+      { "path": "java.util.Collections", "label": "Collections", "description": "Collection utility methods" },
+      { "path": "java.util.Optional", "label": "Optional", "description": "Container for a possibly-absent value" },
+      { "path": "java.io.IOException", "label": "IOException", "description": "Checked exception for I/O failures" },
+      { "path": "java.io.File", "label": "File", "description": "File and directory path handling" },
+      { "path": "java.time.LocalDate", "label": "LocalDate", "description": "Date without a time component" },
+      { "path": "java.util.stream.Stream", "label": "Stream", "description": "Functional-style collection processing" }
+    ]
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "$schema": "./schema/language-rules.schema.json",
+  "languageId": "kotlin",
+  "displayName": "Kotlin",
+  "fileExtensions": [".kt", ".kts"],
+  "indentation": "brace",
+  "blocks": [
+    {
+      "id": "if",
+      "label": "if",
+      "template": "if (${1:condition}) {\n    $0\n}"
+    },
+    {
+      "id": "if-else",
+      "label": "if / else",
+      "template": "if (${1:condition}) {\n    $0\n} else {\n    \n}"
+    },
+    {
+      "id": "for",
+      "label": "for",
+      "template": "for (${1:i} in ${2:0}..${3:count}) {\n    $0\n}"
+    },
+    {
+      "id": "while",
+      "label": "while",
+      "template": "while (${1:condition}) {\n    $0\n}"
+    },
+    {
+      "id": "do-while",
+      "label": "do / while",
+      "template": "do {\n    $0\n} while (${1:condition})"
+    },
+    {
+      "id": "fun",
+      "label": "fun",
+      "template": "fun ${1:name}(${2:}): ${3:Unit} {\n    $0\n}"
+    },
+    {
+      "id": "class",
+      "label": "class",
+      "template": "class ${1:Name} {\n    $0\n}"
+    },
+    {
+      "id": "try-catch",
+      "label": "try / catch",
+      "template": "try {\n    $0\n} catch (${1:e}: ${2:Exception}) {\n    \n}"
+    },
+    {
+      "id": "when",
+      "label": "when",
+      "template": "when (${1:value}) {\n    ${2:condition} -> $0\n    else -> {}\n}"
+    }
+  ],
+  "symbolKinds": [
+    {
+      "id": "variable",
+      "label": "Variable",
+      "modifiers": [
+        {
+          "id": "declaration",
+          "label": "Mutability",
+          "multiple": false,
+          "options": [
+            { "id": "val", "label": "val (immutable)", "text": "val " },
+            { "id": "var", "label": "var (mutable)", "text": "var " }
+          ]
+        }
+      ],
+      "types": ["Int", "Long", "Short", "Byte", "Double", "Float", "Char", "Boolean", "String", "Any"],
+      "template": "{declaration}{name}: {type}"
+    },
+    {
+      "id": "property",
+      "label": "Property",
+      "modifiers": [
+        {
+          "id": "visibility",
+          "label": "Visibility",
+          "multiple": false,
+          "options": [
+            { "id": "public", "label": "public (default)", "text": "" },
+            { "id": "private", "label": "private", "text": "private " },
+            { "id": "protected", "label": "protected", "text": "protected " },
+            { "id": "internal", "label": "internal", "text": "internal " }
+          ]
+        },
+        {
+          "id": "declaration",
+          "label": "Mutability",
+          "multiple": false,
+          "options": [
+            { "id": "val", "label": "val (immutable)", "text": "val " },
+            { "id": "var", "label": "var (mutable)", "text": "var " }
+          ]
+        }
+      ],
+      "types": ["Int", "Long", "Short", "Byte", "Double", "Float", "Char", "Boolean", "String", "Any"],
+      "template": "{visibility}{declaration}{name}: {type}"
+    },
+    {
+      "id": "function",
+      "label": "Function",
+      "modifiers": [
+        {
+          "id": "visibility",
+          "label": "Visibility",
+          "multiple": false,
+          "options": [
+            { "id": "public", "label": "public (default)", "text": "" },
+            { "id": "private", "label": "private", "text": "private " },
+            { "id": "protected", "label": "protected", "text": "protected " },
+            { "id": "internal", "label": "internal", "text": "internal " }
+          ]
+        },
+        {
+          "id": "qualifiers",
+          "label": "Qualifiers",
+          "multiple": true,
+          "options": [
+            { "id": "open", "label": "open", "text": "open " },
+            { "id": "override", "label": "override", "text": "override " },
+            { "id": "suspend", "label": "suspend", "text": "suspend " }
+          ]
+        }
+      ],
+      "types": ["Unit", "Int", "String", "Boolean", "Double", "Any"],
+      "template": "{visibility}{qualifiers}fun {name}(): {type} {\n    $0\n}"
+    },
+    {
+      "id": "class",
+      "label": "Class",
+      "modifiers": [
+        {
+          "id": "visibility",
+          "label": "Visibility",
+          "multiple": false,
+          "options": [
+            { "id": "public", "label": "public (default)", "text": "" },
+            { "id": "private", "label": "private", "text": "private " },
+            { "id": "internal", "label": "internal", "text": "internal " }
+          ]
+        },
+        {
+          "id": "qualifiers",
+          "label": "Qualifiers",
+          "multiple": true,
+          "options": [
+            { "id": "open", "label": "open", "text": "open " },
+            { "id": "abstract", "label": "abstract", "text": "abstract " },
+            { "id": "data", "label": "data", "text": "data " },
+            { "id": "sealed", "label": "sealed", "text": "sealed " }
+          ]
+        }
+      ],
+      "template": "{visibility}{qualifiers}class {name} {\n    $0\n}"
+    }
+  ],
+  "imports": {
+    "statementTemplate": "import {path}",
+    "insertPosition": "after-existing-imports",
+    "stdlib": [
+      { "path": "kotlin.collections.List", "label": "List", "description": "Read-only ordered collection" },
+      { "path": "kotlin.collections.MutableList", "label": "MutableList", "description": "Mutable ordered collection" },
+      { "path": "kotlin.collections.Map", "label": "Map", "description": "Read-only key-value collection" },
+      { "path": "kotlin.collections.MutableMap", "label": "MutableMap", "description": "Mutable key-value collection" },
+      { "path": "kotlin.text.Regex", "label": "Regex", "description": "Regular expression matching" },
+      { "path": "kotlin.random.Random", "label": "Random", "description": "Random number generation" },
+      { "path": "kotlin.math.sqrt", "label": "sqrt", "description": "Square root function" },
+      { "path": "kotlin.time.Duration", "label": "Duration", "description": "A length of time" },
+      { "path": "java.util.Scanner", "label": "Scanner (Java interop)", "description": "Reads input from a stream" },
+      { "path": "java.io.File", "label": "File (Java interop)", "description": "File and directory path handling" },
+      { "path": "java.time.LocalDate", "label": "LocalDate (Java interop)", "description": "Date without a time component" },
+      { "path": "java.util.Collections", "label": "Collections (Java interop)", "description": "Collection utility methods" }
+    ]
+  }
+}
