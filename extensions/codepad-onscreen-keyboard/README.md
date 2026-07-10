@@ -25,14 +25,21 @@ of injecting synthetic keystrokes.
   input-core abstracts pointer events; a real store backed by the extension
   host's `ExtensionContext.globalState` gets wired in once the extension
   exists.
+- **`layouts/`** — the other three panels: `QWERTY_ROWS` (+ `QWERTY_NAV_ROWS`
+  / `QWERTY_ARROW_ROWS`), `OPERATOR_ROWS` (Math/Logic), and `MISC_ROWS`
+  (copy/cut/paste/undo/redo/select). Ported from `KeyboardLayouts.cs`,
+  `MathsLogicLayouts.cs`, and `MiscLayouts.cs`, with keys that only made
+  sense for an external overlay controlling any focused app — PrintScreen,
+  ScrollLock, Pause, and the generic Ctrl/Alt/Win modifier-latch rows —
+  dropped, since there's no editor-command equivalent for them.
 
 ## Not yet built
 
-QWERTY, Math/Logic, and Misc layouts (the other three panels from the plan),
-and the actual webview UI + `vscode.TextEditor` insertion adapter — those
-need the VSCodium extension host to exist, which hasn't been started yet.
-This package is scoped to the parts that are pure logic and can be built and
-tested standalone.
+The actual webview UI and the `vscode.TextEditor`/`vscode.commands`
+insertion adapter that would make `command`/`snippet`/`character` keys do
+something — those need the VSCodium extension host to exist, which hasn't
+been started yet. This package is scoped to the parts that are pure logic
+and can be built and tested standalone ahead of that.
 
 ## Development
 

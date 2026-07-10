@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -b",
-    "test": "npm run build && node --test dist/keyDefinition.test.js dist/blocks.test.js dist/prediction/predictionEngine.test.js"
+    "test": "npm run build && node --test dist/keyDefinition.test.js dist/blocks.test.js dist/prediction/predictionEngine.test.js dist/layouts/layouts.test.js"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
