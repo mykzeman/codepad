@@ -1,0 +1,16 @@
+{
+  "name": "@codepad/module-reference",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Stdlib browsing and import-statement insertion planning for the module reference editor, driven by codepad-rules. Project-dependency parsing (pom.xml/build.gradle/vcpkg.json) is a later phase.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "npm run build && node --test dist/stdlibIndex.test.js dist/importStatement.test.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "^22.20.0"
+  }
+}
