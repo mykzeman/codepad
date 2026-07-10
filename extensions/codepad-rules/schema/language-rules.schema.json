@@ -7,6 +7,10 @@
   "required": ["languageId", "displayName", "fileExtensions", "indentation", "blocks", "symbolKinds", "imports"],
   "additionalProperties": false,
   "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional self-reference to this schema file, so editors like VS Code can validate the instance document on save."
+    },
     "languageId": {
       "type": "string",
       "description": "VS Code language identifier, e.g. \"c\", \"java\", \"kotlin\"."
