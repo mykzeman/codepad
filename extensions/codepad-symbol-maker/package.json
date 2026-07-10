@@ -1,0 +1,16 @@
+{
+  "name": "@codepad/symbol-maker",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Wizard logic and registry for creating variables/functions/classes without typing: pick modifiers and a type from codepad-rules, name via the on-screen keyboard's predictive list, and register the symbol for later click-to-reference.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "npm run build && node --test dist/wizard.test.js dist/template.test.js dist/registry.test.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "^22.20.0"
+  }
+}
