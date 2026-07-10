@@ -1,0 +1,16 @@
+{
+  "name": "@codepad/onscreen-keyboard",
+  "version": "0.0.1",
+  "private": true,
+  "description": "On-screen code-block keyboard: key/layout data model, rule-set-driven Blocks panel, and word prediction. Ported from the standalone WPF overlay's design, adapted to insert through an editor API instead of synthetic keystrokes.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "npm run build && node --test dist/keyDefinition.test.js dist/blocks.test.js dist/prediction/predictionEngine.test.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "^22.20.0"
+  }
+}
