@@ -155,11 +155,14 @@ webview panel with real editor access instead of key injection:
 
 1. **Foundations** — VSCodium fork builds locally under Codepad branding
    (`product.json`, icons, name), CI produces a runnable Windows build.
-   *Status: a stock (unbranded) local build succeeds end-to-end — see
-   [build/README.md](../build/README.md) for the toolchain setup this took
-   (portable Node 24.15.0, `vs2022_install` override, an extra Visual Studio
-   Spectre-libs component). Codepad-specific branding/`product.json`
-   overrides not yet applied.*
+   *Status: builds locally as `Codepad.exe` under full Codepad branding
+   (name, app IDs, data folder) via `build/build-codepad.sh` and
+   `build/product.json` — see [build/README.md](../build/README.md) for
+   the toolchain setup this took (portable Node 24.15.0, `vs2022_install`
+   override, an extra Visual Studio Spectre-libs component, and keeping
+   the vendored checkout outside this npm workspace). Icons not yet
+   applied - stock VSCodium icons in place as a placeholder pending real
+   assets.*
 2. **Language rule sets** — JSON schema + `c.json`/`java.json`/`kotlin.json`
    populated with block templates, symbol kinds/modifiers, import syntax.
 3. **Input core** — pointer-only `activate(elementId)` event and focus-order
