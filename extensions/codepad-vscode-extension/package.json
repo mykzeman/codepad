@@ -1,0 +1,51 @@
+{
+  "name": "codepad",
+  "displayName": "Codepad",
+  "description": "On-screen code-block keyboard, symbol maker, and module reference editor for coding without a keyboard.",
+  "version": "0.0.1",
+  "publisher": "codepad",
+  "private": true,
+  "engines": {
+    "vscode": "^1.125.0"
+  },
+  "categories": ["Other"],
+  "main": "./dist/extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "codepad.openKeyboard",
+        "title": "Codepad: Open On-Screen Keyboard"
+      },
+      {
+        "command": "codepad.newSymbol",
+        "title": "Codepad: New Symbol"
+      },
+      {
+        "command": "codepad.insertSymbolReference",
+        "title": "Codepad: Insert Symbol Reference"
+      },
+      {
+        "command": "codepad.insertModuleImport",
+        "title": "Codepad: Insert Module Import"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc --noEmit -p tsconfig.json && node esbuild.mjs",
+    "package": "npm run build && vsce package --no-dependencies -o codepad.vsix"
+  },
+  "dependencies": {
+    "@codepad/input-core": "0.0.1",
+    "@codepad/onscreen-keyboard": "0.0.1",
+    "@codepad/symbol-maker": "0.0.1",
+    "@codepad/module-reference": "0.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "^22.20.0",
+    "@types/vscode": "^1.125.0",
+    "esbuild": "^0.25.0",
+    "@vscode/vsce": "^3.2.1"
+  }
+}

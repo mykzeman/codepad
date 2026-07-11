@@ -1,0 +1,15 @@
+import * as esbuild from "esbuild";
+
+await esbuild.build({
+  entryPoints: ["src/extension.ts"],
+  bundle: true,
+  outfile: "dist/extension.js",
+  external: ["vscode"],
+  platform: "node",
+  format: "cjs",
+  target: "node20",
+  sourcemap: true,
+  minify: false,
+});
+
+console.log("Build complete: dist/extension.js");

@@ -1,0 +1,6 @@
+src/**
+tsconfig.json
+tsconfig.tsbuildinfo
+esbuild.mjs
+*.map
+.gitignore
