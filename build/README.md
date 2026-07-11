@@ -1,12 +1,25 @@
 # Building the VSCodium fork locally
 
-This records what it actually took to get `dev/build.sh` working on this
-machine, since several of these steps aren't obvious from VSCodium's own
-docs and were genuinely non-trivial to diagnose.
+This records what it actually took to get a Codepad-branded VSCodium build
+working on this machine, since several of these steps aren't obvious from
+VSCodium's own docs and were genuinely non-trivial to diagnose.
+
+## The vendored checkout lives outside this repo
+
+Clone VSCodium's build-scripts repo to `$HOME/codepad-vscodium-build`, **not**
+anywhere under `codepad/` — see "Why outside the workspace" below for why
+this is load-bearing, not just tidiness.
+
+```bash
+git clone --depth 1 https://github.com/VSCodium/vscodium.git "$HOME/codepad-vscodium-build"
+```
+
+`build-codepad.sh` (the driver script in this folder) expects it there by
+default; override the location with `CODEPAD_VSCODIUM_DIR` if needed.
 
 ## One-time setup
 
-VSCodium's own dependency list ([docs/howto-build.md](vscodium/docs/howto-build.md))
+VSCodium's own dependency list ([howto-build.md](https://github.com/VSCodium/vscodium/blob/master/docs/howto-build.md))
 covers Git, jq, 7-Zip, Python 3.11, and rustup — install those first. Two
 things beyond that list were needed here:
 
@@ -72,25 +85,52 @@ installed toolset.
 run elevated from the beginning` (also exits 0 — check the log). It may
 also need Visual Studio's IDE (`devenv.exe`) closed first.
 
-## Running a build
+## Why outside the workspace
 
-From `build/vscodium/`, in Git Bash:
+`build-codepad.sh` merges [`build/product.json`](product.json) (tracked
+here) on top of VSCodium's own `product.json` for the Codepad name/identity
+fields (`nameShort`, `win32DirName`, app IDs, etc.) — see
+[`prepare_vscode.sh`](https://github.com/VSCodium/vscodium/blob/master/prepare_vscode.sh)'s
+`jq -s '.[0] * .[1]'` merge step for the mechanism.
+
+The vendored checkout must live **outside** this repo's npm workspace
+entirely, not just in a gitignored subfolder. When it was at
+`build/vscodium/` (inside this workspace), `tsgo`'s typecheck of vscode's
+own `mermaid-markdown-features` extension failed with ~1000 spurious
+`Duplicate identifier` errors — it walks up ancestor `node_modules/@types`
+directories looking for `vscode`, and found *this repo's own*
+`@types/vscode` (a devDependency of `codepad-vscode-extension`) sitting in
+the workspace root, colliding with the extension's in-tree `vscode.d.ts`
+include. Relocating the checkout outside the workspace's directory chain
+entirely fixed it. (Wasted a lot of time first suspecting GitHub API rate
+limiting, then an upstream commit regression, and pinning `MS_COMMIT` to
+rule that out, before finding the real cause — both are dead ends, not
+useful fixes, if this resurfaces.)
+
+## Running a build
 
 ```bash
 export PATH="/c/Users/mykal/projects/codepad/build/tools/node-v24.15.0-win-x64:/c/Users/mykal/.cargo/bin:/c/Program Files/7-Zip:/c/Users/mykal/AppData/Local/Microsoft/WinGet/Packages/jqlang.jq_Microsoft.Winget.Source_8wekyb3d8bbwe:$PATH"
 export vs2022_install="C:\Program Files\Microsoft Visual Studio\18\Community"
-./dev/build.sh
+./build-codepad.sh
 ```
 
-Use `./dev/build.sh -s` on subsequent runs to skip re-fetching the vscode
-source (it still resets and reapplies patches and does a full recompile —
-there's no fast incremental-resume path after a failure partway through).
+Run from anywhere (it `cd`s into `$HOME/codepad-vscodium-build` itself). Use
+`-s` on subsequent runs to skip re-fetching the vscode source (it still
+resets and reapplies patches and does a full recompile — there's no fast
+incremental-resume path after a failure partway through).
 
 A successful build produces a runnable app at
-`build/vscodium/VSCode-win32-x64/VSCodium.exe`, plus remote-extension-host
-builds (`vscode-reh-win32-x64/`, `vscode-reh-web-win32-x64/`). No installer
-packages are produced unless `-p` is passed (skipped by default via
-`SKIP_ASSETS=yes` in `dev/build.sh`).
+`$HOME/codepad-vscodium-build/VSCode-win32-x64/Codepad.exe` (or
+`VSCodium.exe` if built via VSCodium's own unmodified `dev/build.sh`), plus
+remote-extension-host builds (`vscode-reh-win32-x64/`,
+`vscode-reh-web-win32-x64/`). No installer packages are produced unless
+`-p` is passed (skipped by default via `SKIP_ASSETS=yes`).
+
+**Don't `cd` into the vendored checkout and leave your shell sitting
+there.** Windows refuses to delete a directory that any process has as its
+current working directory — a build's `rm -rf vscode*` step failing with
+`Device or resource busy` traced back to exactly that.
 
 ## Known flaky step
 

@@ -54,11 +54,12 @@ npm run build     # typecheck + esbuild bundle to dist/extension.js
 npm run package   # build, then vsce package -> codepad.vsix
 ```
 
-Install into the local build and verify:
+Install into the local build and verify (the vendored checkout lives
+outside this repo — see [build/README.md](../../build/README.md) for why):
 
 ```bash
-"../../build/vscodium/VSCode-win32-x64/bin/codium.cmd" --install-extension codepad.vsix --force
-"../../build/vscodium/VSCode-win32-x64/VSCodium.exe" --verbose
+"$HOME/codepad-vscodium-build/VSCode-win32-x64/bin/codium.cmd" --install-extension codepad.vsix --force
+"$HOME/codepad-vscodium-build/VSCode-win32-x64/VSCodium.exe" --verbose
 ```
 
 Then check `%APPDATA%\VSCodium\logs\<latest>\window1\exthost\exthost.log`

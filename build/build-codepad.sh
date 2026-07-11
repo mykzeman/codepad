@@ -1,8 +1,18 @@
 #!/usr/bin/env bash
 # Builds VSCodium under Codepad branding, using build/product.json (this
-# repo's tracked override file, not the vendored copy inside
-# build/vscodium/) merged on top of VSCodium's own product.json by its
-# existing `prepare_vscode.sh` merge step.
+# repo's tracked override file) merged on top of VSCodium's own
+# product.json by its existing `prepare_vscode.sh` merge step.
+#
+# The vendored VSCodium/vscode checkout lives OUTSIDE this repo entirely
+# (default: $HOME/codepad-vscodium-build, override with
+# CODEPAD_VSCODIUM_DIR) - it must not be anywhere under this workspace's
+# npm workspace root. tsgo's typecheck of vscode's own
+# mermaid-markdown-features extension walks up ancestor node_modules/@types
+# directories looking for "vscode" and picks up this repo's own
+# @types/vscode (a devDependency of codepad-vscode-extension) if the
+# vendored tree is nested inside the workspace, producing hundreds of
+# spurious duplicate-identifier errors against the extension's in-tree
+# vscode.d.ts include. Confirmed by relocating outside the workspace.
 #
 # Run from anywhere, with the toolchain PATH and vs2022_install already
 # set up per build/README.md. Pass -s to skip re-fetching the vscode
@@ -11,7 +21,13 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VSCODIUM_DIR="${SCRIPT_DIR}/vscodium"
+VSCODIUM_DIR="${CODEPAD_VSCODIUM_DIR:-${HOME}/codepad-vscodium-build}"
+
+if [[ ! -d "${VSCODIUM_DIR}" ]]; then
+  echo "Error: ${VSCODIUM_DIR} not found. Clone it first:"
+  echo "  git clone --depth 1 https://github.com/VSCodium/vscodium.git \"${VSCODIUM_DIR}\""
+  exit 1
+fi
 
 SKIP_SOURCE="no"
 while getopts ":s" opt; do
@@ -66,6 +82,19 @@ if [[ "${SKIP_SOURCE}" == "no" ]]; then
   rm -rf vscode* VSCode*
   . get_repo.sh
   . version.sh
+else
+  # prepare_vscode.sh (called from build.sh) reapplies patches
+  # unconditionally on every run, so a prior run's patched tree must be
+  # reset back to its pre-patch state first, or the reapply fails against
+  # an already-modified tree. Mirrors dev/build.sh's own -s handling.
+  cd vscode || { echo "'vscode' dir not found"; exit 1; }
+  git add .
+  git reset -q --hard HEAD
+  while [[ -n "$(git log -1 | grep "VSCODIUM HELPER")" ]]; do
+    git reset -q --hard HEAD~
+  done
+  rm -rf .build out*
+  cd ..
 fi
 
 . build.sh
