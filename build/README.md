@@ -132,14 +132,63 @@ there.** Windows refuses to delete a directory that any process has as its
 current working directory — a build's `rm -rf vscode*` step failing with
 `Device or resource busy` traced back to exactly that.
 
-## Known flaky step
+## Custom source patches
 
-The `bundle-marketplace-extensions-build` gulp task downloads a few
-extensions (js-debug, js-debug-companion, vscode-js-profile-table) from
-GitHub. One run failed later in the pipeline with an opaque
-`Error: Command failed: npm -v` from `vsce`'s `checkNPM()` — a plain retry
-succeeded with no other changes. Root cause wasn't confirmed (GitHub API
-rate limiting was checked and ruled out — plenty of quota remained); if it
-recurs, it's worth checking whether `GITHUB_TOKEN` being unset is a factor
-(the build reads it in `build/lib/fetch.ts` to authenticate GitHub API
-calls, but core rate-limit quota wasn't exhausted when this happened).
+Codepad-specific changes to vscode's own source (welcome page copy, the
+tagline, etc. — not just `product.json` fields) live in
+[`build/patches/user/`](patches/user), copied into the vendored checkout's
+`patches/user/` on every run — VSCodium's own `prepare_vscode.sh` applies
+that directory last, after its own patches, as its designated hook for
+exactly this.
+
+To add one: edit the file directly in `$HOME/codepad-vscodium-build/vscode`,
+then isolate *just* your change as a diff (plain `git diff` there shows
+VSCodium's entire own patch set too, since those are applied as uncommitted
+changes, not commits — not just yours). Reconstruct the pre-edit content in
+a scratch copy and diff against that instead:
+
+```bash
+cp path/to/file.ts /tmp/before/path/to/file.ts
+# hand-revert your change in the /tmp/before copy, then:
+diff -u /tmp/before/path/to/file.ts path/to/file.ts
+```
+
+Wrap the hunk in a `diff --git a/... b/...` / `index ...` / `--- a/...` /
+`+++ b/...` header (see the existing patches for the exact format) and save
+it under `build/patches/user/`. `git apply --ignore-whitespace` is what
+actually applies it, so it needs to be a clean unified diff, not a raw file
+copy.
+
+## Icons
+
+See [`build/icons/README.md`](icons/README.md) — same drop-in-and-it-gets-
+copied pattern as `product.json` and the patches above.
+
+## Known flaky/broken steps
+
+- **`bundle-marketplace-extensions-build`** downloads a few extensions
+  (js-debug, js-debug-companion, vscode-js-profile-table) from GitHub. One
+  run failed later in the pipeline with an opaque `Error: Command failed:
+  npm -v` from `vsce`'s `checkNPM()` — a plain retry succeeded with no other
+  changes. Root cause wasn't confirmed (GitHub API rate limiting was
+  checked and ruled out — plenty of quota remained); if it recurs, it's
+  worth checking whether `GITHUB_TOKEN` being unset is a factor (the build
+  reads it in `build/lib/fetch.ts` to authenticate GitHub API calls, but
+  core rate-limit quota wasn't exhausted when this happened).
+- **`tsgo` typecheck** has failed with no useful error output at all
+  (`Error: tsgo exited with code 1`, zero preceding `error TS...` lines) on
+  a run that started right after several other builds in a row — never
+  pinned down a cause, but a plain retry succeeded. If it keeps recurring,
+  worth checking actual memory/CPU load rather than assuming it's the
+  ancestor-`@types` bug above (that one prints hundreds of concrete
+  `Duplicate identifier` errors; this one prints none).
+- **Empty `package.json` "version" breaking packaging**: `-s` skips
+  `get_repo.sh`/`version.sh`, which are what set `RELEASE_VERSION`. Without
+  it, `prepare_vscode.sh` writes an empty `package.json` `"version"`, and
+  packaging fails much later with an unrelated-looking
+  `rcedit.exe ... Unable to parse version string for FileVersion`.
+  `build-codepad.sh` now caches `MS_TAG`/`MS_COMMIT`/`RELEASE_VERSION`/
+  `BUILD_SOURCEVERSION` to `$HOME/codepad-vscodium-build/.codepad-build.env`
+  on every non-`-s` run and reloads it on `-s` runs — if you ever bypass
+  `build-codepad.sh` and call `dev/build.sh`/`build.sh` directly with `-s`,
+  this bug is back.

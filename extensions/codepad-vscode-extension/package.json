@@ -5,6 +5,10 @@
   "version": "0.0.1",
   "publisher": "codepad",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mykzeman/codepad.git"
+  },
   "engines": {
     "vscode": "^1.125.0"
   },
@@ -28,6 +32,10 @@
       {
         "command": "codepad.insertModuleImport",
         "title": "Codepad: Insert Module Import"
+      },
+      {
+        "command": "codepad.newWorkspaceWizard",
+        "title": "Codepad: New Workspace with Wizard"
       }
     ]
   },

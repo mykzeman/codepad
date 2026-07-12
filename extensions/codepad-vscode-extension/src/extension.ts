@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { registerKeyboardPanel, openKeyboardPanel } from "./keyboardPanel";
 import { newSymbolCommand, symbolRegistrySearch } from "./symbolMakerCommand";
 import { insertModuleImportCommand } from "./moduleReferenceCommand";
+import { newWorkspaceWizardCommand } from "./newWorkspaceWizardCommand";
 
 export function activate(context: vscode.ExtensionContext): void {
   registerKeyboardPanel(context);
@@ -11,6 +12,7 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("codepad.newSymbol", () => void newSymbolCommand()),
     vscode.commands.registerCommand("codepad.insertModuleImport", () => void insertModuleImportCommand()),
     vscode.commands.registerCommand("codepad.insertSymbolReference", () => void insertSymbolReferenceCommand()),
+    vscode.commands.registerCommand("codepad.newWorkspaceWizard", () => void newWorkspaceWizardCommand()),
   );
 }
 

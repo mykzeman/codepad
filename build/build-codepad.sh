@@ -39,6 +39,20 @@ done
 
 cp "${SCRIPT_DIR}/product.json" "${VSCODIUM_DIR}/product.json"
 
+# Codepad's own source patches (welcome page, tagline, etc.), applied last
+# by prepare_vscode.sh via its designated `patches/user/` hook, on top of
+# VSCodium's own patches. Cleared and repopulated each run so a patch
+# removed from build/patches/user/ doesn't linger in the vendored tree.
+mkdir -p "${VSCODIUM_DIR}/patches/user"
+rm -f "${VSCODIUM_DIR}/patches/user/"*.patch
+cp "${SCRIPT_DIR}/patches/user/"*.patch "${VSCODIUM_DIR}/patches/user/"
+
+# Icon source SVGs (build/icons/README.md) - copied over only once real
+# files are dropped in; the README alone has nothing to copy.
+if compgen -G "${SCRIPT_DIR}/icons/stable/*.svg" > /dev/null; then
+  cp "${SCRIPT_DIR}/icons/stable/"*.svg "${VSCODIUM_DIR}/icons/stable/"
+fi
+
 cd "${VSCODIUM_DIR}"
 
 export APP_NAME="Codepad"
@@ -78,11 +92,32 @@ export NODE_OPTIONS="--max-old-space-size=8192"
 
 echo "Building Codepad (APP_NAME=${APP_NAME}, BINARY_NAME=${BINARY_NAME}, SKIP_SOURCE=${SKIP_SOURCE})"
 
+BUILD_ENV_FILE="${VSCODIUM_DIR}/.codepad-build.env"
+
 if [[ "${SKIP_SOURCE}" == "no" ]]; then
   rm -rf vscode* VSCode*
   . get_repo.sh
   . version.sh
+
+  # get_repo.sh/version.sh only export these into this process; -s runs
+  # need them too but skip both scripts, so cache them here. Without this,
+  # RELEASE_VERSION stays empty on a -s run, prepare_vscode.sh writes an
+  # empty package.json "version", and packaging fails late with an opaque
+  # `rcedit.exe ... Unable to parse version string for FileVersion`.
+  {
+    echo "MS_TAG=\"${MS_TAG}\""
+    echo "MS_COMMIT=\"${MS_COMMIT}\""
+    echo "RELEASE_VERSION=\"${RELEASE_VERSION}\""
+    echo "BUILD_SOURCEVERSION=\"${BUILD_SOURCEVERSION}\""
+  } > "${BUILD_ENV_FILE}"
 else
+  if [[ ! -f "${BUILD_ENV_FILE}" ]]; then
+    echo "Error: ${BUILD_ENV_FILE} not found - run without -s at least once first."
+    exit 1
+  fi
+  . "${BUILD_ENV_FILE}"
+  export MS_TAG MS_COMMIT RELEASE_VERSION BUILD_SOURCEVERSION
+
   # prepare_vscode.sh (called from build.sh) reapplies patches
   # unconditionally on every run, so a prior run's patched tree must be
   # reset back to its pre-patch state first, or the reapply fails against
