@@ -5,6 +5,9 @@
 node_modules/
 npm-debug.log*
 
+# Python
+__pycache__/
+
 # Build outputs
 out/
 dist/

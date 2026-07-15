@@ -132,4 +132,16 @@ else
   cd ..
 fi
 
+# Regenerates resources/win32/code.ico from build/icons/stable/codium_cnl.svg
+# so build.sh's own packaging step (which calls rcedit against that file)
+# embeds Codepad's icon instead of VSCodium's stock one. Must run after
+# vscode/ exists (both branches above ensure that) and before build.sh.
+# Requires Pillow (`python3 -m pip install --user Pillow`); skips quietly
+# if python3 or Pillow aren't available, leaving the stock icon in place.
+if command -v python3 &> /dev/null && python3 -c "import PIL" &> /dev/null; then
+  python3 "${SCRIPT_DIR}/generate-icons.py" "${VSCODIUM_DIR}"
+else
+  echo "python3/Pillow not available - skipping icon generation, stock icon will be used."
+fi
+
 . build.sh
