@@ -79,6 +79,18 @@ def render(svg_path: Path, size: int) -> Image.Image:
     return img
 
 
+def render_tile(svg_path: Path, canvas_size: int, logo_size: int, offset: tuple[int, int]) -> Image.Image:
+    """Matches build_icons.sh's build_windows_type: logo rendered at logo_size,
+    composited onto a transparent canvas_size canvas at a NorthWest offset -
+    not necessarily centered. The 150x150 tile in particular is deliberately
+    biased toward the top, since Windows overlays ShortDisplayName text below
+    the logo when ShowNameOnSquare150x150Logo="on"."""
+    canvas = Image.new("RGBA", (canvas_size, canvas_size), (0, 0, 0, 0))
+    logo = render(svg_path, logo_size)
+    canvas.alpha_composite(logo, offset)
+    return canvas
+
+
 def main():
     if len(sys.argv) != 2:
         print("Usage: generate-icons.py <vscodium-dir>", file=sys.stderr)
@@ -86,17 +98,24 @@ def main():
 
     vscodium_dir = Path(sys.argv[1])
     svg_path = Path(__file__).parent / "icons" / "stable" / "codium_cnl.svg"
-    ico_path = vscodium_dir / "vscode" / "resources" / "win32" / "code.ico"
+    win32_dir = vscodium_dir / "vscode" / "resources" / "win32"
 
     if not svg_path.exists():
         print(f"No {svg_path} - nothing to generate, leaving stock icon in place.")
         return
 
+    ico_path = win32_dir / "code.ico"
     images = {size: render(svg_path, size) for size in ICO_SIZES}
     images[max(ICO_SIZES)].save(
         ico_path, format="ICO", sizes=[(s, s) for s in ICO_SIZES], append_images=list(images.values())
     )
     print(f"Generated {ico_path} from {svg_path}")
+
+    # Start Menu/taskbar tile assets (win32/VisualElementsManifest.xml) - sizes
+    # and offsets match build_icons.sh's build_windows_types exactly.
+    render_tile(svg_path, 70, 45, (12, 12)).save(win32_dir / "code_70x70.png")
+    render_tile(svg_path, 150, 64, (44, 25)).save(win32_dir / "code_150x150.png")
+    print(f"Generated {win32_dir / 'code_70x70.png'} and code_150x150.png")
 
 
 if __name__ == "__main__":

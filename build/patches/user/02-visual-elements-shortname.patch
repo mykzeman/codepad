@@ -1,0 +1,11 @@
+diff --git a/resources/win32/VisualElementsManifest.xml b/resources/win32/VisualElementsManifest.xml
+index 7e4d6dc..ba25987 100644
+--- a/resources/win32/VisualElementsManifest.xml
++++ b/resources/win32/VisualElementsManifest.xml
+@@ -5,5 +5,5 @@
+ 				Square150x150Logo="resources\app\resources\win32\code_150x150.png"
+ 				Square70x70Logo="resources\app\resources\win32\code_70x70.png"
+ 				ForegroundText="light"
+-				ShortDisplayName="VSCodium" />
++				ShortDisplayName="Codepad" />
+ </Application>
