@@ -56,9 +56,26 @@ show the old logo after "fixing the icon," since it's not a `.ico`/`.png`
 at all. `build-codepad.sh` copies `codium_clt.svg` there directly (plain
 file copy, no rasterization needed since it's used as an SVG in place).
 
-Needs `python3 -m pip install --user Pillow`; silently falls back to the
-stock icon/tiles if `python3`/Pillow aren't available (the title bar SVG
-copy doesn't need Pillow and always runs).
+**A fifth**: the empty-editor-area "letterpress" watermark
+(`src/vs/workbench/browser/parts/editor/media/letterpress-{light,dark,
+hcLight,hcDark}.svg`) — arguably the most *visible* of all five once you
+notice it, since it's a large, prominent shape in the middle of an empty
+editor. `generate-icons.py`'s `generate_letterpress()` builds real vector
+SVG (not rasterized) for all four theme variants, matching VSCodium's own
+colors/opacities (`#B2B2B2` at 10%/30% for light/dark, full-opacity
+`#B2B2B2`/`#3C3C3C` for the high-contrast pair) exactly. The original is one
+solid silhouette path; `codium_cnl.svg` is two-tone (black body + white
+key-cutouts) — flattening both to one opacity would lose the keyboard shape
+entirely, so the "key" paths render at 40% of the body's opacity instead,
+preserving the shape while staying within the same muted watermark look.
+(There are two more `letterpress-sessions-*.svg` files under
+`src/vs/sessions/contrib/chat/browser/media/` for a Chat Sessions panel —
+left alone, since they're an unrelated illustration for that feature, not
+app branding, and aren't just a recolor of the logo.)
+
+Needs `python3 -m pip install --user Pillow`; silently falls back to
+VSCodium's stock assets for all five if `python3`/Pillow aren't available
+(the title-bar SVG copy doesn't need Pillow and always runs on its own).
 
 **This only works because the current artwork is rectangle-only.** If a
 future logo has curves, either extend `generate-icons.py`'s path parser

@@ -91,6 +91,36 @@ def render_tile(svg_path: Path, canvas_size: int, logo_size: int, offset: tuple[
     return canvas
 
 
+def generate_letterpress(svg_path: Path, color: str, base_opacity: float, key_opacity_ratio: float = 0.4) -> str:
+    """Builds one of the four editor-empty-state watermark variants
+    (light/dark/hcLight/hcDark) as real vector SVG - a plain color/opacity
+    swap, not a rasterize. The original letterpress art is one solid
+    silhouette path; ours is two-tone (black body + white key-cutouts), so
+    flattening both to one opacity would lose the keyboard shape entirely.
+    Keeping the "keys" at a fraction of the body's opacity preserves that
+    detail while staying within the same monochrome watermark look."""
+    root = ET.parse(svg_path).getroot()
+    vb = root.get("viewBox").split()
+    parts = ['<?xml version="1.0" encoding="UTF-8"?>', f'<svg xmlns="http://www.w3.org/2000/svg" width="{vb[2]}" height="{vb[3]}" viewBox="0 0 {vb[2]} {vb[3]}">']
+
+    def walk(elem):
+        tag = elem.tag.split("}")[-1]
+        if tag in ("g", "svg"):
+            for child in elem:
+                walk(child)
+        elif tag == "path":
+            fill = elem.get("fill", "rgb(0,0,0)")
+            is_black = "0,0,0" in fill
+            opacity = base_opacity if is_black else base_opacity * key_opacity_ratio
+            transform = elem.get("transform")
+            transform_attr = f' transform="{transform}"' if transform else ""
+            parts.append(f'  <path d="{elem.get("d")}" fill="{color}" fill-opacity="{opacity:.3f}"{transform_attr} />')
+
+    walk(root)
+    parts.append("</svg>")
+    return "\n".join(parts) + "\n"
+
+
 def main():
     if len(sys.argv) != 2:
         print("Usage: generate-icons.py <vscodium-dir>", file=sys.stderr)
@@ -116,6 +146,19 @@ def main():
     render_tile(svg_path, 70, 45, (12, 12)).save(win32_dir / "code_70x70.png")
     render_tile(svg_path, 150, 64, (44, 25)).save(win32_dir / "code_150x150.png")
     print(f"Generated {win32_dir / 'code_70x70.png'} and code_150x150.png")
+
+    # Empty-editor-area "letterpress" watermark, one per theme. Colors/base
+    # opacities match VSCodium's own stock files exactly.
+    letterpress_dir = vscodium_dir / "vscode" / "src" / "vs" / "workbench" / "browser" / "parts" / "editor" / "media"
+    letterpress_variants = {
+        "letterpress-light.svg": ("#B2B2B2", 0.1),
+        "letterpress-dark.svg": ("#B2B2B2", 0.3),
+        "letterpress-hcLight.svg": ("#B2B2B2", 1.0),
+        "letterpress-hcDark.svg": ("#3C3C3C", 1.0),
+    }
+    for filename, (color, opacity) in letterpress_variants.items():
+        (letterpress_dir / filename).write_text(generate_letterpress(svg_path, color, opacity), encoding="utf-8")
+    print(f"Generated {len(letterpress_variants)} letterpress watermark variants in {letterpress_dir}")
 
 
 if __name__ == "__main__":

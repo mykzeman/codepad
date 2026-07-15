@@ -132,12 +132,15 @@ else
   cd ..
 fi
 
-# Regenerates resources/win32/code.ico from build/icons/stable/codium_cnl.svg
-# so build.sh's own packaging step (which calls rcedit against that file)
-# embeds Codepad's icon instead of VSCodium's stock one. Must run after
-# vscode/ exists (both branches above ensure that) and before build.sh.
-# Requires Pillow (`python3 -m pip install --user Pillow`); skips quietly
-# if python3 or Pillow aren't available, leaving the stock icon in place.
+# Regenerates the .exe icon, Start Menu/taskbar tiles, and the empty-editor
+# "letterpress" watermark (light/dark/hcLight/hcDark) from
+# build/icons/stable/codium_cnl.svg, so build.sh's own packaging step (which
+# calls rcedit against resources/win32/code.ico) embeds Codepad's icon
+# instead of VSCodium's stock one, and the watermark shows the keyboard mark
+# instead of the stock logo. Must run after vscode/ exists (both branches
+# above ensure that) and before build.sh. Requires Pillow
+# (`python3 -m pip install --user Pillow`); skips quietly if python3 or
+# Pillow aren't available, leaving all of these as VSCodium's stock assets.
 if command -v python3 &> /dev/null && python3 -c "import PIL" &> /dev/null; then
   python3 "${SCRIPT_DIR}/generate-icons.py" "${VSCODIUM_DIR}"
 else
