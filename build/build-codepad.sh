@@ -144,4 +144,13 @@ else
   echo "python3/Pillow not available - skipping icon generation, stock icon will be used."
 fi
 
+# The custom title bar's own icon (rendered as part of the web UI, not the
+# native window icon - untouched by the .ico work above) is just a plain
+# SVG file, no rasterization needed. VSCodium's own icons/build_icons.sh
+# would populate this from codium_clt.svg too if we ran it; since we don't,
+# copy it directly.
+if [[ -f "${SCRIPT_DIR}/icons/stable/codium_clt.svg" ]]; then
+  cp "${SCRIPT_DIR}/icons/stable/codium_clt.svg" "vscode/src/vs/workbench/browser/media/code-icon.svg"
+fi
+
 . build.sh

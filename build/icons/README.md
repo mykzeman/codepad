@@ -13,7 +13,7 @@ Linux `.png` set) from three source SVGs — replace these:
 | File | Used for |
 |---|---|
 | `stable/codium_cnl.svg` | Main app icon (normal color) — the primary one |
-| `stable/codium_clt.svg` | Light-color variant |
+| `stable/codium_clt.svg` | Light-color variant — also used directly (as an SVG, not rasterized) for the app's custom title bar icon |
 | `stable/codium_cnl_w80_b8.svg` | Normal color, scaled to 80% width with an 8pt border |
 
 ## How the Windows `.exe` icon actually gets generated
@@ -48,8 +48,17 @@ in `resources/win32/VisualElementsManifest.xml` (not derived from
 fixed via `build/patches/user/02-visual-elements-shortname.patch`, the same
 mechanism as the tagline/welcome-page patches.
 
+**A fourth, separate icon**: the app's own custom title bar (rendered as
+part of the web UI, not the native window chrome) draws
+`src/vs/workbench/browser/media/code-icon.svg` directly — a totally
+different mechanism from all three above, and the one most likely to still
+show the old logo after "fixing the icon," since it's not a `.ico`/`.png`
+at all. `build-codepad.sh` copies `codium_clt.svg` there directly (plain
+file copy, no rasterization needed since it's used as an SVG in place).
+
 Needs `python3 -m pip install --user Pillow`; silently falls back to the
-stock icon/tiles if `python3`/Pillow aren't available.
+stock icon/tiles if `python3`/Pillow aren't available (the title bar SVG
+copy doesn't need Pillow and always runs).
 
 **This only works because the current artwork is rectangle-only.** If a
 future logo has curves, either extend `generate-icons.py`'s path parser
