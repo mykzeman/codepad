@@ -34,8 +34,28 @@
         "title": "Codepad: Insert Module Import"
       },
       {
+        "command": "codepad.blankFile",
+        "title": "Codepad: Blank File"
+      },
+      {
         "command": "codepad.newWorkspaceWizard",
         "title": "Codepad: New Workspace with Wizard"
+      },
+      {
+        "command": "codepad.newWorkspaceWithGitAndWizard",
+        "title": "Codepad: New Workspace with Git and Wizard"
+      },
+      {
+        "command": "codepad.newWorkspaceWithGit",
+        "title": "Codepad: New Workspace with Git"
+      },
+      {
+        "command": "codepad.openWorkspace",
+        "title": "Codepad: Open Workspace"
+      },
+      {
+        "command": "codepad.openWorkspaceWithWizard",
+        "title": "Codepad: Open Workspace with Wizard"
       }
     ]
   },

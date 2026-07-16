@@ -19,6 +19,26 @@ const STARTER_FILES: Record<string, { fileName: string; content: string }> = {
   },
 };
 
+export async function blankFileCommand(): Promise<void> {
+  await vscode.commands.executeCommand("workbench.action.files.newUntitledFile");
+}
+
+export async function openWorkspaceCommand(): Promise<void> {
+  await vscode.commands.executeCommand("workbench.action.files.openFolder");
+}
+
+export async function openWorkspaceWithWizardCommand(): Promise<void> {
+  await newWorkspaceWizardCommand();
+}
+
+export async function newWorkspaceWithGitCommand(): Promise<void> {
+  await vscode.commands.executeCommand("git.clone");
+}
+
+export async function newWorkspaceWithGitAndWizardCommand(): Promise<void> {
+  await newWorkspaceWizardCommand();
+}
+
 /**
  * Replaces the welcome page's "Connect to..." remote-workspace entry.
  * Click-only, no typed paths: language from a QuickPick, folder from the

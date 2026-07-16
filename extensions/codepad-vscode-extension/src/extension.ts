@@ -2,7 +2,14 @@ import * as vscode from "vscode";
 import { registerKeyboardPanel, openKeyboardPanel } from "./keyboardPanel";
 import { newSymbolCommand, symbolRegistrySearch } from "./symbolMakerCommand";
 import { insertModuleImportCommand } from "./moduleReferenceCommand";
-import { newWorkspaceWizardCommand } from "./newWorkspaceWizardCommand";
+import {
+  blankFileCommand,
+  newWorkspaceWithGitAndWizardCommand,
+  newWorkspaceWithGitCommand,
+  newWorkspaceWizardCommand,
+  openWorkspaceCommand,
+  openWorkspaceWithWizardCommand,
+} from "./newWorkspaceWizardCommand";
 
 export function activate(context: vscode.ExtensionContext): void {
   registerKeyboardPanel(context);
@@ -12,7 +19,12 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("codepad.newSymbol", () => void newSymbolCommand()),
     vscode.commands.registerCommand("codepad.insertModuleImport", () => void insertModuleImportCommand()),
     vscode.commands.registerCommand("codepad.insertSymbolReference", () => void insertSymbolReferenceCommand()),
+    vscode.commands.registerCommand("codepad.blankFile", () => void blankFileCommand()),
     vscode.commands.registerCommand("codepad.newWorkspaceWizard", () => void newWorkspaceWizardCommand()),
+    vscode.commands.registerCommand("codepad.newWorkspaceWithGitAndWizard", () => void newWorkspaceWithGitAndWizardCommand()),
+    vscode.commands.registerCommand("codepad.newWorkspaceWithGit", () => void newWorkspaceWithGitCommand()),
+    vscode.commands.registerCommand("codepad.openWorkspace", () => void openWorkspaceCommand()),
+    vscode.commands.registerCommand("codepad.openWorkspaceWithWizard", () => void openWorkspaceWithWizardCommand()),
   );
 }
 

@@ -2,21 +2,77 @@ diff --git a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStarte
 index 168a3d01..775f4157 100644
 --- a/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
 +++ b/src/vs/workbench/contrib/welcomeGettingStarted/common/gettingStartedContent.ts
-@@ -190,13 +190,13 @@ export const startEntries: GettingStartedStartEntryContent = [
+@@ -190,13 +190,61 @@ export const startEntries: GettingStartedStartEntryContent = [
  	},
  	{
- 		id: 'topLevelRemoteOpen',
+-		id: 'topLevelRemoteOpen',
 -		title: localize('gettingStarted.topLevelRemoteOpen.title', "Connect to..."),
 -		description: localize('gettingStarted.topLevelRemoteOpen.description', "Connect to remote development workspaces."),
-+		title: localize('gettingStarted.topLevelRemoteOpen.title', "New Workspace with Wizard"),
-+		description: localize('gettingStarted.topLevelRemoteOpen.description', "Scaffold a new workspace by language, without typing a path."),
++		id: 'codepadBlankFile',
++		title: localize('codepad.blankFile.title', "blank file"),
++		description: localize('codepad.blankFile.description', "Start with a fresh untitled file."),
  		when: '!isWeb',
 -		icon: Codicon.remote,
-+		icon: Codicon.newFolder,
++		icon: Codicon.newFile,
  		content: {
  			type: 'startEntry',
 -			command: 'command:workbench.action.remote.showMenu',
-+			command: 'command:codepad.newWorkspaceWizard',
++			command: 'command:codepad.blankFile',
  		}
  	},
++	{
++		id: 'codepadNewWorkspaceWizard',
++		title: localize('codepad.newWorkspaceWizard.title', "New workspace with wizard"),
++		description: localize('codepad.newWorkspaceWizard.description', "Create a workspace and scaffold a starter file with the Codepad wizard."),
++		when: '!isWeb',
++		icon: Codicon.newFolder,
++		content: {
++			type: 'startEntry',
++			command: 'command:codepad.newWorkspaceWizard',
++		}
++	},
++	{
++		id: 'codepadNewWorkspaceGitWizard',
++		title: localize('codepad.newWorkspaceGitWizard.title', "new workspace with git and wizard"),
++		description: localize('codepad.newWorkspaceGitWizard.description', "Clone or create a Git-backed workspace and start with the wizard."),
++		when: '!isWeb',
++		icon: Codicon.gitBranch,
++		content: {
++			type: 'startEntry',
++			command: 'command:codepad.newWorkspaceWithGitAndWizard',
++		}
++	},
++	{
++		id: 'codepadNewWorkspaceGit',
++		title: localize('codepad.newWorkspaceGit.title', "new workspace with git"),
++		description: localize('codepad.newWorkspaceGit.description', "Open a Git-backed workspace without the wizard."),
++		when: '!isWeb',
++		icon: Codicon.gitBranch,
++		content: {
++			type: 'startEntry',
++			command: 'command:codepad.newWorkspaceWithGit',
++		}
++	},
++	{
++		id: 'codepadOpenWorkspace',
++		title: localize('codepad.openWorkspace.title', "Open workspace"),
++		description: localize('codepad.openWorkspace.description', "Open an existing workspace folder."),
++		when: '!isWeb',
++		icon: Codicon.folderOpened,
++		content: {
++			type: 'startEntry',
++			command: 'command:codepad.openWorkspace',
++		}
++	},
++	{
++		id: 'codepadOpenWorkspaceWizard',
++		title: localize('codepad.openWorkspaceWizard.title', "Open workspace with wizard"),
++		description: localize('codepad.openWorkspaceWizard.description', "Open an existing workspace and start the Codepad wizard."),
++		when: '!isWeb',
++		icon: Codicon.folderOpened,
++		content: {
++			type: 'startEntry',
++			command: 'command:codepad.openWorkspaceWithWizard',
++		}
++	},
  ];
